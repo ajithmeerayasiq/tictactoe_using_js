@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>tictactoe</title>
+    <style type="text/css">
+      * {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-weight: 700;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      .game-container {
+        width: 180px;
+        border-radius: 20px;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+          rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+        border: 1px solid #e7eaedd4;
+        margin: 20px;
+      }
+
+      .box {
+        background-color: lightgray;
+        margin: 5px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="turn-indicator" id="turnIndicator">x's Turn</div>
+    <div class="game-container" id="gameContainer">
+      <div class="box" onclick="addMark(0)"></div>
+      <div class="box" onclick="addMark(1)"></div>
+      <div class="box" onclick="addMark(2)"></div>
+      <div class="box" onclick="addMark(3)"></div>
+      <div class="box" onclick="addMark(4)"></div>
+      <div class="box" onclick="addMark(5)"></div>
+      <div class="box" onclick="addMark(6)"></div>
+      <div class="box" onclick="addMark(7)"></div>
+      <div class="box" onclick="addMark(8)"></div>
+    </div>
+    <div id="gameOver"></div>
+    <script type="text/javascript">
+      let marks = ["", "", "", "", "", "", "", "", ""];
+      let div, box;
+      let symbol = "O";
+      let gameStarted = false;
+      let renderCount = 0;
+      let gameContainer;
+      let gameOver = false;
+
+      const addMark = (index) => {
+        if (symbol == "O") {
+          symbol = "X";
+          marks[index] = symbol;
+        } else {
+          symbol = "O";
+          marks[index] = symbol;
+          // turnIndicator.innerHTML = symbol
+        }
+        render();
+        results();
+        // turnUpdate();
+      };
+
+      const render = () => {
+        const gameBoard = document.getElementById("gameContainer");
+
+        gameBoard.remove();
+        gameContainer = document.createElement("div");
+        gameContainer.className = "game-container";
+        gameContainer.setAttribute("id", "gameContainer");
+        marks.map((val, i) => {
+          box = document.createElement("div");
+          if (marks[i] == "" && !gameOver) {
+            box.addEventListener("click", () => addMark(i));
+          }
+          box.className = "box";
+          const node = document.createTextNode(val);
+          box.appendChild(node);
+          gameContainer.appendChild(box);
+        });
+
+        // for (let i = marks.length; i < 9; i++) {
+        //   box = document.createElement("div");
+        //   box.addEventListener("click", addMark);
+        //   box.className = "box";
+        //   const node = document.createTextNode("");
+        //   box.appendChild(node);
+        //   gameContainer.appendChild(box);
+        // }
+        document.body.appendChild(gameContainer);
+
+        const turnNode = document.getElementById("turnIndicator");
+        if (symbol == "O") {
+          turnsymbol = "X";
+        } else {
+          turnsymbol = "O";
+        }
+        turnNode.innerHTML = turnsymbol + "'s Turn";
+      };
+
+      const getMarksLength = () => {
+        let len = 0;
+        marks.map((ele) => {
+          if (ele != "") {
+            len++;
+          }
+        });
+        return len;
+      };
+
+      const results = () => {
+        const winningCombinations = [
+          [0, 1, 2], // Top row
+          [3, 4, 5], // Middle row
+          [6, 7, 8], // Bottom row
+        ];
+
+        let marksLength = getMarksLength();
+        if (marksLength > 4) {
+          for (const [a, b, c] of winningCombinations) {
+            if (marks[a] === marks[b] && marks[b] === marks[c]) {
+              console.log(symbol);
+              gameOver = true;
+              break;
+            }
+          }
+        }
+        if (gameOver) {
+          render();
+          let gameOverDiv = document.getElementById("gameOver");
+          gameOverDiv.innerHTML = "Game Over";
+        }
+      };
+    </script>
+  </body>
+</html>
